@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | SpendWise</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 35px 20px;
+        }
+
+        .back {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        h1 {
+            margin: 25px 0 5px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .total {
+            font-size: 32px;
+            font-weight: 700;
+            color: #dc2626;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .category {
+            font-weight: 600;
+        }
+
+        .amount {
+            font-weight: 700;
+        }
+
+        .empty {
+            color: #6b7280;
+            text-align: center;
+            padding: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="{% url 'dashboard' %}" class="back">
+        ← Back to Dashboard
+    </a>
+
+    <h1>Reports</h1>
+
+    <p class="subtitle">
+        See how your expenses are distributed across categories.
+    </p>
+
+    <div class="card">
+
+        <div style="color:#6b7280;">
+            Total Expenses
+        </div>
+
+        <div class="total">
+            ₹{{ total }}
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Expenses by Category</h2>
+
+        {% for item in category_data %}
+
+            <div class="row">
+
+                <div class="category">
+                    {{ item.name }}
+                </div>
+
+                <div class="amount">
+                    ₹{{ item.amount }}
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="empty">
+                No expense data available yet.
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

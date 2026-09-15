@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics | SpendWise</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 35px 20px;
+        }
+
+        .back {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        h1 {
+            margin: 25px 0 5px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .income {
+            color: #16803c;
+        }
+
+        .expense {
+            color: #dc2626;
+        }
+
+        .balance {
+            color: #4f46e5;
+        }
+
+        .info {
+            margin-top: 25px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 700px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="{% url 'dashboard' %}" class="back">
+        ← Back to Dashboard
+    </a>
+
+    <h1>Statistics</h1>
+
+    <p class="subtitle">
+        Overview of your income, expenses, and balance.
+    </p>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="label">Total Income</div>
+            <div class="value income">
+                ₹{{ total_income }}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="label">Total Expenses</div>
+            <div class="value expense">
+                ₹{{ total_expenses }}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="label">Balance</div>
+            <div class="value balance">
+                ₹{{ balance }}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card info">
+        <strong>How it works</strong>
+        <p>
+            Total Income shows all income entries you have recorded.
+            Total Expenses shows all recorded expenses.
+            Balance is calculated as total income minus total expenses.
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>

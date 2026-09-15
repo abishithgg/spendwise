@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budgets | SpendWise</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 35px 20px;
+        }
+
+        .back {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 25px 0;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .secondary {
+            background: #eef0f5;
+            color: #374151;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+        }
+
+        .budget {
+            border-bottom: 1px solid #eee;
+            padding: 18px 0;
+        }
+
+        .budget:last-child {
+            border-bottom: none;
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .category {
+            font-weight: 700;
+            font-size: 17px;
+        }
+
+        .amount {
+            font-weight: 600;
+        }
+
+        .bar {
+            height: 10px;
+            background: #e9ecf2;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: #4f46e5;
+            border-radius: 20px;
+        }
+
+        .details {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 14px;
+        }
+
+        .edit {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .delete {
+            color: #dc2626;
+            border: none;
+            background: none;
+            padding: 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 600px) {
+            .top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="{% url 'dashboard' %}" class="back">
+        ← Back to Dashboard
+    </a>
+
+    <div class="top">
+        <div>
+            <h1>Budgets</h1>
+            <p class="subtitle">Set limits and monitor your spending.</p>
+        </div>
+
+        <a href="{% url 'add_budget' %}" class="btn primary">
+            + Set Budget
+        </a>
+    </div>
+
+    {% if budget_data %}
+
+        {% for item in budget_data %}
+
+        <div class="card budget">
+
+            <div class="budget-header">
+                <div class="category">
+                    {{ item.budget.category }}
+                </div>
+
+                <div class="amount">
+                    ₹{{ item.spent }} / ₹{{ item.budget.amount }}
+                </div>
+            </div>
+
+            <div class="bar">
+                <div
+                    class="progress"
+                    style="width: {{ item.percentage }}%;">
+                </div>
+            </div>
+
+            <div class="details">
+                {{ item.percentage|floatformat:0 }}% used
+                · Month: {{ item.budget.month|date:"F Y" }}
+            </div>
+
+            <div class="actions">
+
+                <a
+                    href="{% url 'edit_budget' item.budget.id %}"
+                    class="edit">
+                    Edit
+                </a>
+
+                <form
+                    method="POST"
+                    action="{% url 'delete_budget' item.budget.id %}"
+                    onsubmit="return confirm('Delete this budget?');"
+                    style="display:inline;">
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="delete">
+                        Delete
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="card empty">
+
+            <h2>No budgets yet</h2>
+
+            <p>Create a budget to start controlling your spending.</p>
+
+            <a href="{% url 'add_budget' %}" class="btn primary">
+                Create Budget
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpendWise - Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f7fb;
+            color: #182230;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            color: white;
+            padding: 25px 16px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            padding: 0 14px 30px;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .nav-title {
+            color: #94a3b8;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 14px 10px;
+        }
+
+        .nav a {
+            display: block;
+            padding: 12px 14px;
+            margin: 4px 0;
+            border-radius: 10px;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background: #1e293b;
+            color: white;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 16px;
+            right: 16px;
+        }
+
+        .logout a {
+            display: block;
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: #fca5a5;
+        }
+
+        .logout a:hover {
+            background: #3f1d1d;
+        }
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 30px 40px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .welcome p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .add-btn {
+            background: #2563eb;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .add-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 22px;
+        }
+
+        .card-label {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 27px;
+            font-weight: 750;
+        }
+
+        .income {
+            color: #16a34a;
+        }
+
+        .expense {
+            color: #dc2626;
+        }
+
+        .balance {
+            color: #2563eb;
+        }
+
+        .saving {
+            color: #7c3aed;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .panel-header h2 {
+            font-size: 18px;
+        }
+
+        .panel-header a {
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .quick-action {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 17px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .quick-action:hover {
+            border-color: #2563eb;
+            background: #f8fbff;
+        }
+
+        .transaction {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .transaction:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .transaction-meta {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .transaction-amount {
+            font-weight: 700;
+        }
+
+        .budget-item {
+            margin-bottom: 20px;
+        }
+
+        .budget-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .progress {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 20px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        @media (max-width: 1000px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+                width: calc(100% - 210px);
+                padding: 20px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            Spend<span>Wise</span>
+        </div>
+
+        <div class="nav-title">Menu</div>
+
+        <nav class="nav">
+            <a href="{% url 'dashboard' %}" class="active">Dashboard</a>
+            <a href="{% url 'expenses' %}">Expenses</a>
+            <a href="{% url 'income' %}">Income</a>
+            <a href="{% url 'budgets' %}">Budgets</a>
+            <a href="{% url 'reports' %}">Reports</a>
+            <a href="{% url 'statistics' %}">Statistics</a>
+        </nav>
+
+        <div class="nav-title" style="margin-top:25px;">Account</div>
+
+        <nav class="nav">
+            <a href="{% url 'profile' %}">Profile</a>
+            <a href="{% url 'settings' %}">Settings</a>
+        </nav>
+
+        <div class="logout">
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="topbar">
+            <div class="welcome">
+                <h1>Dashboard</h1>
+                <p>Welcome back, {{ request.user.username }}.</p>
+            </div>
+
+            <a href="{% url 'add_expense' %}" class="add-btn">
+                + Add Expense
+            </a>
+        </div>
+
+        <section class="cards">
+
+            <div class="card">
+                <div class="card-label">Total Income</div>
+                <div class="card-value income">
+                    ₹{{ total_income|floatformat:2 }}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Total Expenses</div>
+                <div class="card-value expense">
+                    ₹{{ total_expenses|floatformat:2 }}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Current Balance</div>
+                <div class="card-value balance">
+                    ₹{{ balance|floatformat:2 }}
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Savings Rate</div>
+                <div class="card-value saving">
+                    {{ savings_rate|floatformat:1 }}%
+                </div>
+            </div>
+
+        </section>
+
+        <div class="grid">
+
+            <div>
+
+                <section class="panel">
+
+                    <div class="panel-header">
+                        <h2>Recent Expenses</h2>
+                        <a href="{% url 'expenses' %}">View All</a>
+                    </div>
+
+                    {% for expense in recent_expenses %}
+
+                    <div class="transaction">
+
+                        <div>
+                            <div class="transaction-title">
+                                {{ expense.title }}
+                            </div>
+
+                            <div class="transaction-meta">
+                                {{ expense.category }} ·
+                                {{ expense.payment_method }} ·
+                                {{ expense.date|date:"d M Y" }}
+                            </div>
+                        </div>
+
+                        <div class="transaction-amount expense">
+                            - ₹{{ expense.amount|floatformat:2 }}
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <div class="empty">
+                        No expenses yet.
+                    </div>
+
+                    {% endfor %}
+
+                </section>
+
+            </div>
+
+            <div>
+
+                <section class="panel">
+
+                    <div class="panel-header">
+                        <h2>Quick Actions</h2>
+                    </div>
+
+                    <div class="quick-actions">
+
+                        <a href="{% url 'add_expense' %}" class="quick-action">
+                            + Expense
+                        </a>
+
+                        <a href="{% url 'add_income' %}" class="quick-action">
+                            + Income
+                        </a>
+
+                        <a href="{% url 'add_budget' %}" class="quick-action">
+                            + Budget
+                        </a>
+
+                    </div>
+
+                </section>
+
+                <section class="panel">
+
+                    <div class="panel-header">
+                        <h2>Monthly Budgets</h2>
+                        <a href="{% url 'budgets' %}">Manage</a>
+                    </div>
+
+                    {% for item in budget_data %}
+
+                    <div class="budget-item">
+
+                        <div class="budget-top">
+                            <span>{{ item.budget.category }}</span>
+
+                            <span>
+                                ₹{{ item.spent|floatformat:0 }}
+                                /
+                                ₹{{ item.budget.amount|floatformat:0 }}
+                            </span>
+                        </div>
+
+                        <div class="progress">
+                            <div class="progress-bar"
+                                 style="width: {{ item.percentage }}%;">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <div class="empty">
+                        No budgets set for this month.
+                        <br><br>
+
+                        <a href="{% url 'add_budget' %}"
+                           style="color:#2563eb;font-weight:600;">
+                            Create your first budget
+                        </a>
+                    </div>
+
+                    {% endfor %}
+
+                </section>
+
+                <section class="panel">
+
+                    <div class="panel-header">
+                        <h2>Recent Income</h2>
+                        <a href="{% url 'income' %}">View All</a>
+                    </div>
+
+                    {% for income in recent_income %}
+
+                    <div class="transaction">
+
+                        <div>
+                            <div class="transaction-title">
+                                {{ income.title }}
+                            </div>
+
+                            <div class="transaction-meta">
+                                {{ income.source }} ·
+                                {{ income.date|date:"d M Y" }}
+                            </div>
+                        </div>
+
+                        <div class="transaction-amount income">
+                            + ₹{{ income.amount|floatformat:2 }}
+                        </div>
+
+                    </div>
+
+                    {% empty %}
+
+                    <div class="empty">
+                        No income recorded yet.
+                    </div>
+
+                    {% endfor %}
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

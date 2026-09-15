@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses | SpendWise</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 35px 20px;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            margin: 6px 0 0;
+            color: #6b7280;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .primary {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .secondary {
+            background: #eef0f5;
+            color: #374151;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 220px auto auto;
+            gap: 12px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d9deea;
+            border-radius: 9px;
+            font-size: 14px;
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            color: #6b7280;
+            font-size: 13px;
+            padding: 14px 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px 10px;
+            border-bottom: 1px solid #f0f1f4;
+            font-size: 14px;
+        }
+
+        .amount {
+            font-weight: 700;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .edit {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .delete {
+            background: none;
+            border: none;
+            color: #dc2626;
+            cursor: pointer;
+            font-weight: 600;
+            padding: 0;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6b7280;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 800px) {
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .card {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 750px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="{% url 'dashboard' %}" class="back">
+        ← Back to Dashboard
+    </a>
+
+    <div class="top">
+        <div>
+            <h1>Expenses</h1>
+            <p class="subtitle">Track and manage your spending.</p>
+        </div>
+
+        <a href="{% url 'add_expense' %}" class="btn primary">
+            + Add Expense
+        </a>
+    </div>
+
+    <div class="card">
+
+        <form method="GET" class="filters">
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Search expenses..."
+                value="{{ search }}"
+            >
+
+            <select name="category">
+                <option value="">All Categories</option>
+
+                {% for value, label in categories %}
+                    <option value="{{ value }}"
+                        {% if category == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn primary">
+                Search
+            </button>
+
+            <a href="{% url 'expenses' %}" class="btn secondary">
+                Reset
+            </a>
+
+        </form>
+
+    </div>
+
+    <div class="card">
+
+        {% if expenses %}
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Expense</th>
+                    <th>Category</th>
+                    <th>Payment</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for expense in expenses %}
+
+                <tr>
+
+                    <td>
+                        <strong>{{ expense.title }}</strong>
+
+                        {% if expense.description %}
+                            <br>
+                            <small style="color:#6b7280;">
+                                {{ expense.description }}
+                            </small>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <span class="badge">
+                            {{ expense.category }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ expense.payment_method }}
+                    </td>
+
+                    <td>
+                        {{ expense.date|date:"d M Y" }}
+                    </td>
+
+                    <td class="amount">
+                        ₹{{ expense.amount }}
+                    </td>
+
+                    <td>
+                        <div class="actions">
+
+                            <a
+                                href="{% url 'edit_expense' expense.id %}"
+                                class="edit">
+                                Edit
+                            </a>
+
+                            <form
+                                method="POST"
+                                action="{% url 'delete_expense' expense.id %}"
+                                onsubmit="return confirm('Delete this expense?');"
+                                style="display:inline;">
+                                
+                                {% csrf_token %}
+
+                                <button type="submit" class="delete">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty">
+
+            <h2>No expenses found</h2>
+
+            <p>
+                You haven't added any expenses yet.
+            </p>
+
+            <a href="{% url 'add_expense' %}" class="btn primary">
+                Add Your First Expense
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
